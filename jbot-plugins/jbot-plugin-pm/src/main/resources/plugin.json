@@ -1,0 +1,7 @@
+{
+  "name": "plugin-manager",
+  "main": "x.ovo.jbot.plugin.pm.PmPlugin",
+  "version": "1.0.0",
+  "description": "插件管理器",
+  "authors": ["ovo"]
+}

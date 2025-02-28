@@ -1,0 +1,7 @@
+{
+  "name": "js-plugin-test",
+  "main": "test.js",
+  "version": "1.0.0",
+  "description": "JavaScript插件测试",
+  "authors": ["ovo"]
+}

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>x.ovo.jbot</groupId>
+    <version>1.0-SNAPSHOT</version>
+    <artifactId>jbot-bom</artifactId>
+    <packaging>pom</packaging>
+    <description>jbot的依赖声明</description>
+
+    <properties>
+        <maven.compiler.source>23</maven.compiler.source>
+        <maven.compiler.target>23</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <ver.vertx>5.0.0.CR5</ver.vertx>
+        <ver.lombok>1.18.36</ver.lombok>
+        <ver.validator>6.2.5.Final</ver.validator>
+        <ver.zxing>3.5.3</ver.zxing>
+        <ver.jemoji>1.6.0</ver.jemoji>
+        <ver.slf4j>2.0.16</ver.slf4j>
+        <ver.picocli>4.7.6</ver.picocli>
+        <ver.logback>1.5.12</ver.logback>
+        <ver.hutool>6.0.0-M19</ver.hutool>
+        <ver.jackson>2.15.4</ver.jackson>
+        <ver.junit>5.10.3</ver.junit>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>x.ovo.jbot</groupId>
+                <artifactId>jbot-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <!-- vertx依赖管理 -->
+            <dependency>
+                <groupId>io.vertx</groupId>
+                <artifactId>vertx-stack-depchain</artifactId>
+                <version>${ver.vertx}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <!-- hutool-bom，子模块只引入需要的模块即可 -->
+            <dependency>
+                <groupId>org.dromara.hutool</groupId>
+                <artifactId>hutool-bom</artifactId>
+                <version>${ver.hutool}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <!-- 控制台二维码生成 -->
+            <dependency>
+                <groupId>com.google.zxing</groupId>
+                <artifactId>core</artifactId>
+                <version>${ver.zxing}</version>
+            </dependency>
+            <!-- emoji处理 -->
+            <dependency>
+                <groupId>net.fellbaum</groupId>
+                <artifactId>jemoji</artifactId>
+                <version>${ver.jemoji}</version>
+            </dependency>
+            <!-- 命令行解析 -->
+            <dependency>
+                <groupId>info.picocli</groupId>
+                <artifactId>picocli</artifactId>
+                <version>${ver.picocli}</version>
+            </dependency>
+            <!-- lombok -->
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${ver.lombok}</version>
+                <scope>provided</scope>
+            </dependency>
+            <!-- 日志门面 -->
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${ver.slf4j}</version>
+            </dependency>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>${ver.logback}</version>
+            </dependency>
+            <!-- 数据验证框架 -->
+            <dependency>
+                <groupId>org.hibernate.validator</groupId>
+                <artifactId>hibernate-validator</artifactId>
+                <version>${ver.validator}</version>
+            </dependency>
+            <!-- jackson -->
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${ver.jackson}</version>
+            </dependency>
+
+            <!-- 单元测试 -->
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter</artifactId>
+                <version>${ver.junit}</version>
+                <scope>test</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+
+</project>

@@ -1,0 +1,24 @@
+{
+  // 插件限制模式，默认被名单模式，即只有在白名单中的群聊才会触发插件
+  "mode": "WHITE_LIST",
+  // 插件限制名单
+  "limits": {
+    "nickname:@:Ooops": [
+      "test",
+      "news"
+    ]
+  },
+  // 插件配置
+  "config": {
+    "plugin_name": {
+      "enabled": true,
+      "priority": 10,
+      "next": true,
+      "permissions": [
+        "username:@:wxid_fneu92389833vds,nickname:@:Ooops",
+        "nickname:@:Ooops",
+        "remark:@:大号"
+      ]
+    }
+  }
+}
