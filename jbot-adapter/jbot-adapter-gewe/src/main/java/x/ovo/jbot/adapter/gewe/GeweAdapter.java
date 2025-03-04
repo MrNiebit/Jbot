@@ -9,12 +9,14 @@ import lombok.extern.slf4j.Slf4j;
 import x.ovo.jbot.adapter.gewe.service.ContactServiceImpl;
 import x.ovo.jbot.adapter.gewe.service.GroupServiceImpl;
 import x.ovo.jbot.adapter.gewe.service.LoginServiceImpl;
+import x.ovo.jbot.adapter.gewe.service.MessageServiceImpl;
 import x.ovo.jbot.core.Context;
 import x.ovo.jbot.core.adapter.Adapter;
 import x.ovo.jbot.core.common.constant.JBotFiles;
 import x.ovo.jbot.core.service.*;
 
 import java.io.File;
+import java.util.Objects;
 
 /**
  * GEWE 适配器
@@ -37,8 +39,8 @@ public class GeweAdapter implements Adapter {
             log.debug("adapter config: {}", cfg.encodePrettily());
             // api工具设置token与deviceId
             GeweAdapter.config = cfg;
-            ApiUtil.setHeader(cfg.getString("token"));
-            ApiUtil.setDeviceId(cfg.getString("device_id"));
+            ApiUtil.setHeader(Objects.isNull(cfg.getString("token")) ? "" : cfg.getString("token"));
+            ApiUtil.setDeviceId(Objects.isNull(cfg.getString("device_id")) ? "" : cfg.getString("device_id"));
             log.info("Gewe adapter 初始化完成");
             promise.complete();
         });
@@ -66,7 +68,10 @@ public class GeweAdapter implements Adapter {
         //  1、执行登录流程或重连
         return this.getLoginService().login()
                 .onSuccess(v -> log.info("登录成功"))
-                .compose(v -> this.getLoginService().getUserInfo().onSuccess(me -> Context.get().getContactManager().add(me)))
+                .compose(v -> this.getLoginService().getUserInfo().onSuccess(me -> {
+                    Context.get().getContactManager().add(me);
+                    Context.get().setBot(me);
+                }))
                 //  2、获取联系人信息存入联系人管理器中
                 .compose(v -> this.getContactService().list())
                 //  3、开启回调服务器
@@ -111,7 +116,7 @@ public class GeweAdapter implements Adapter {
 
     @Override
     public MessageService getMessageService() {
-        return null;
+        return MessageServiceImpl.INSTANCE;
     }
 
     @Override

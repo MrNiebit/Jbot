@@ -158,7 +158,7 @@ public enum LoginServiceImpl implements LoginService {
     private Future<String> getToken() {
         return ApiUtil.post("/tools/getTokenId", JsonObject.of())
                 .compose(res -> Future.future(promise -> {
-                    var token = res.getString("token");
+                    var token = res.getString("data");
                     this.config.put("token", token);
                     ApiUtil.setHeader(token);
                     GeweAdapter.saveConfig();
@@ -220,7 +220,7 @@ public enum LoginServiceImpl implements LoginService {
     public Future<Void> setCallback() {
         var ip = this.config.getString("callback_ip", NetUtil.getLocalhostStrV4());
         var port = this.config.getInteger("callback_port", 8511);
-        return ApiUtil.post("/tools/setCallback", JsonObject.of("token", this.config.getString("token"), "callbackUrl", ip + ":" + port))
+        return ApiUtil.post("/tools/setCallback", JsonObject.of("token", this.config.getString("token"), "callbackUrl", "http://" + ip + ":" + port))
                 .compose(res -> Future.succeededFuture());
     }
 

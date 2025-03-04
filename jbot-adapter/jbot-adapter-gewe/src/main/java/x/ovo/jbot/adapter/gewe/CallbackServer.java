@@ -2,6 +2,7 @@ package x.ovo.jbot.adapter.gewe;
 
 import io.vertx.core.json.JsonObject;
 import lombok.extern.slf4j.Slf4j;
+import x.ovo.jbot.adapter.gewe.service.LoginServiceImpl;
 import x.ovo.jbot.core.Context;
 import x.ovo.jbot.core.message.MessageFactory;
 import x.ovo.jbot.core.message.MessageManager;
@@ -28,10 +29,11 @@ public class CallbackServer {
                         var m = Context.get().getMessageManager();
                         manager = m;
                         return m;
-                    }).add(MessageFactory.convert(data.getJsonObject("Data")));
+                    }).add(MessageFactory.convert(data.getJsonObject("data")));
                 }))
                 .listen(8511)
                 .onSuccess(server -> log.info("消息回调服务启动成功，监听端口: {}", server.actualPort()))
+                .compose(v -> LoginServiceImpl.INSTANCE.setCallback())
                 .onFailure(err -> log.warn("消息回调服务启动失败: {}", err.getMessage()));
     }
 }
