@@ -25,6 +25,7 @@ public class CallbackServer {
                     JsonObject data = body.toJsonObject();
                     log.debug("收到消息：{}", data.encodePrettily());
                     req.response().end();
+                    if (!data.containsKey("data")) return;
                     Optional.ofNullable(manager).orElseGet(() -> {
                         var m = Context.get().getMessageManager();
                         manager = m;
