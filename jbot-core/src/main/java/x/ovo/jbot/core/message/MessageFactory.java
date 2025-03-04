@@ -198,7 +198,7 @@ public class MessageFactory {
             var xml = XmlUtil.parseXml(data.getString("Content"));
             var root = XmlUtil.getRootElement(xml);
             var node = XmlUtil.getElement(root, "appmsg");
-            int type = Integer.parseInt(XmlUtil.getElement(node, "type").getNodeValue());
+            int type = Integer.parseInt(XmlUtil.getElement(node, "type").getTextContent());
             // 适配子类型
             var msg = switch (type) {
                 case 33 -> appletMessage(node);
@@ -211,22 +211,22 @@ public class MessageFactory {
                 case 51 -> appFinderMessage(node);
                 default -> new AppMessage();
             };
-            msg.setTitle(XmlUtil.getElement(node, "title").getNodeValue());
-            msg.setDesc(XmlUtil.getElement(node, "des").getNodeValue());
-            msg.setUrl(XmlUtil.getElement(node, "url").getNodeValue());
-            msg.setAppinfo(XmlUtil.xmlToBean(XmlUtil.getElement(node, "appinfo"), AppMessage.AppInfo.class));
+            msg.setTitle(XmlUtil.getElement(node, "title").getTextContent());
+            msg.setDesc(XmlUtil.getElement(node, "des").getTextContent());
+            msg.setUrl(XmlUtil.getElement(node, "url").getTextContent());
+            msg.setAppinfo(XmlUtil.xmlToBean(XmlUtil.getElement(root, "appinfo"), AppMessage.AppInfo.class));
             return msg;
         };
     }
 
     protected static AppMessage appMsgFile(Element node) {
         var msg = new FileMessage();
-        msg.setName(XmlUtil.getElement(node, "title").getNodeValue());
+        msg.setName(XmlUtil.getElement(node, "title").getTextContent());
         var attach = XmlUtil.getElement(node, "appattach");
-        msg.setSize(Integer.parseInt(XmlUtil.getElement(attach, "totallen").getNodeValue()));
-        msg.setExt(ReUtil.getGroup0("<![CDATA[(.*)]]>", XmlUtil.getElement(attach, "fileext").getNodeValue()));
-        msg.setFileUrl(XmlUtil.getElement(attach, "fileuploadtoken").getNodeValue());
-        msg.setMd5(ReUtil.getGroup0("<![CDATA[(.*)]]>", XmlUtil.getElement(node, "md5").getNodeValue()));
+        msg.setSize(Integer.parseInt(XmlUtil.getElement(attach, "totallen").getTextContent()));
+        msg.setExt(ReUtil.getGroup0("<![CDATA[(.*)]]>", XmlUtil.getElement(attach, "fileext").getTextContent()));
+        msg.setFileUrl(XmlUtil.getElement(attach, "fileuploadtoken").getTextContent());
+        msg.setMd5(ReUtil.getGroup0("<![CDATA[(.*)]]>", XmlUtil.getElement(node, "md5").getTextContent()));
         return msg;
     }
 
@@ -252,21 +252,21 @@ public class MessageFactory {
     protected static QuoteMessage appQuoteMessage(Element node) {
         var msg = new QuoteMessage();
         var refer = XmlUtil.getElement(node, "refermsg");
-        msg.setName(XmlUtil.getElement(refer, "displayname").getNodeValue());
-        msg.setReferType(MessageType.of(Integer.parseInt(XmlUtil.getElement(refer, "type").getNodeValue())));
-        msg.setRefer(XmlUtil.getElement(refer, "content").getNodeValue());
-        msg.setDate(DateUtil.date(Long.parseLong(XmlUtil.getElement(refer, "createtime").getNodeValue()) * 1000));
+        msg.setName(XmlUtil.getElement(refer, "displayname").getTextContent());
+        msg.setReferType(MessageType.of(Integer.parseInt(XmlUtil.getElement(refer, "type").getTextContent())));
+        msg.setRefer(XmlUtil.getElement(refer, "content").getTextContent());
+        msg.setDate(DateUtil.date(Long.parseLong(XmlUtil.getElement(refer, "createtime").getTextContent()) * 1000));
         return msg;
     }
 
     protected static FinderMessage appFinderMessage(Element node) {
         var msg = new FinderMessage();
         var finder = XmlUtil.getElement(node, "finderFeed");
-        msg.setNickname(XmlUtil.getElement(finder, "nickname").getNodeValue());
-        msg.setFinderDesc(XmlUtil.getElement(finder, "desc").getNodeValue());
+        msg.setNickname(XmlUtil.getElement(finder, "nickname").getTextContent());
+        msg.setFinderDesc(XmlUtil.getElement(finder, "desc").getTextContent());
         try {
             var media = XmlUtil.getElement(XmlUtil.getElement(finder, "mediaList"), "media");
-            msg.setDuration(Integer.parseInt(XmlUtil.getElement(media, "videoPlayDuration").getNodeValue()));
+            msg.setDuration(Integer.parseInt(XmlUtil.getElement(media, "videoPlayDuration").getTextContent()));
         } catch (Exception ignored){}
         return msg;
     }
