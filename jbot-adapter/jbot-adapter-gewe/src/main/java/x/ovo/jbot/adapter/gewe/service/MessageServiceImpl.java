@@ -3,8 +3,12 @@ package x.ovo.jbot.adapter.gewe.service;
 import io.vertx.core.Future;
 import io.vertx.core.json.JsonObject;
 import lombok.extern.slf4j.Slf4j;
+import org.dromara.hutool.core.text.StrUtil;
 import x.ovo.jbot.adapter.gewe.ApiUtil;
 import x.ovo.jbot.adapter.gewe.GeweAdapter;
+import x.ovo.jbot.core.Context;
+import x.ovo.jbot.core.contact.ContactManager;
+import x.ovo.jbot.core.contact.Contactable;
 import x.ovo.jbot.core.message.Downloadable;
 import x.ovo.jbot.core.message.entity.*;
 import x.ovo.jbot.core.message.entity.appmsg.AppMessage;
@@ -12,6 +16,8 @@ import x.ovo.jbot.core.message.entity.appmsg.AppletMessage;
 import x.ovo.jbot.core.message.entity.appmsg.FileMessage;
 import x.ovo.jbot.core.message.entity.appmsg.LinkMessage;
 import x.ovo.jbot.core.service.MessageService;
+
+import java.util.Arrays;
 
 @Slf4j
 public enum MessageServiceImpl implements MessageService {
@@ -36,9 +42,21 @@ public enum MessageServiceImpl implements MessageService {
 
     @Override
     public Future<SentMessage> sendText(TextMessage message) {
+        var content = message.getContent();
+        if (StrUtil.isNotBlank(message.getAts())) {
+            ContactManager manager = Context.get().getContactManager();
+            var ats = Arrays.stream(message.getAts().split(","))
+                    .map(String::trim)
+                    .map(manager::get)
+                    .map(Contactable::getNickname)
+                    .map(nickname -> "@" + nickname)
+                    .reduce(String::concat)
+                    .orElse("");
+            content = ats + " " + content;
+        }
         JsonObject body = JsonObject.of(
                 "toWxid", message.getReceiver().getId(),
-                "content", message.getContent(),
+                "content", content,
                 "ats", message.getAts()
         );
         return ApiUtil.post("/message/postText", body)
