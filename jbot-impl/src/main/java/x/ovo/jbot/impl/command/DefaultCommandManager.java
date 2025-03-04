@@ -9,8 +9,10 @@ import x.ovo.jbot.core.Context;
 import x.ovo.jbot.core.command.Command;
 import x.ovo.jbot.core.command.CommandExecutor;
 import x.ovo.jbot.core.command.CommandManager;
+import x.ovo.jbot.core.common.enums.ContactType;
 import x.ovo.jbot.core.contact.Contactable;
 import x.ovo.jbot.core.event.ExceptionEvent;
+import x.ovo.jbot.core.message.entity.TextMessage;
 import x.ovo.jbot.core.plugin.Plugin;
 import x.ovo.jbot.core.plugin.PluginConfig;
 import x.ovo.jbot.core.plugin.PluginManager;
@@ -107,7 +109,15 @@ public class DefaultCommandManager implements CommandManager {
                         promise.complete(StrUtil.format("执行指令 [{}] 时出现异常: {}", command.getMessage().getContent(), e.getMessage()));
                     }
                 })
-                .compose(command.getMessage().getSender()::send)
+                .compose(str -> {
+                    var msg = new TextMessage();
+                    msg.setContent(str);
+                    Contactable sender = command.getMessage().getSender();
+                    if (sender.getType().equals(ContactType.GROUP)) {
+                        msg.setAts(user.getId());
+                    }
+                    return sender.send(msg);
+                })
                 .mapEmpty();
     }
 
