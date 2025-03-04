@@ -181,7 +181,7 @@ public class DefaultPluginManager implements PluginManager {
                 } else if (Objects.isNull(target)) {
                     // 全局启用插件
                     Optional.ofNullable(this.config.get(name)).ifPresent(config -> config.setEnabled(true));
-                    Future.future(plugin::enable).onSuccess(v -> promise.complete(StrUtil.format("插件 [{}] 启用成功", name))).onFailure(promise::fail);
+                    Future.future(plugin::enable).onSuccess(v -> log.info("插件 [{}] 启用成功", name)).onFailure(promise::fail);
                 } else {
                     if (this.mode == LimitMode.WHITE_LIST) {
                         // 白名单模式下为目标启用插件需要将插件添加到限制名单
@@ -208,8 +208,9 @@ public class DefaultPluginManager implements PluginManager {
                     promise.complete(StrUtil.format("插件 [{}] 已是禁用状态，请勿重复操作", name));
                 } else if (Objects.isNull(target)) {
                     // 全局禁用插件
-                    Optional.ofNullable(this.config.get(name)).ifPresent(config -> config.setEnabled(false));
-                    Future.future(plugin::enable).onSuccess(v -> promise.complete(StrUtil.format("插件 [{}] 禁用成功", name))).onFailure(promise::fail);
+                    this.config.computeIfAbsent(name, n -> new PluginConfig()).setEnabled(false);
+//                    Optional.ofNullable(this.config.get(name)).ifPresent(config -> config.setEnabled(false));
+                    Future.future(plugin::disable).onSuccess(v -> promise.complete(StrUtil.format("插件 [{}] 禁用成功", name))).onFailure(promise::fail);
                 } else {
                     if (this.mode == LimitMode.BLACK_LIST) {
                         // 黑名单模式下为目标禁用插件需要将插件添加到限制名单
@@ -233,7 +234,7 @@ public class DefaultPluginManager implements PluginManager {
 
     @Override
     public Collection<Plugin> availableList(Contactable target) {
-        return Objects.isNull(target) ? List.of() : this.limits.get(target).stream().map(this::get).toList();
+        return Objects.isNull(target) ? List.of() : Optional.ofNullable(this.limits.get(target)).orElse(List.of()).stream().map(this::get).toList();
     }
 
     @Override

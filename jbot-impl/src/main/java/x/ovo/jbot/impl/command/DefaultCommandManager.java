@@ -104,11 +104,11 @@ public class DefaultCommandManager implements CommandManager {
                         log.error("执行指令 [{}] 时出现异常: {}", command.getMessage().getContent(), e.getMessage());
                         log.debug("执行指令 [{}] 时出现异常", command.getMessage().getContent(), e);
                         new ExceptionEvent(e).publish();
-                        promise.complete();
                         promise.complete(StrUtil.format("执行指令 [{}] 时出现异常: {}", command.getMessage().getContent(), e.getMessage()));
                     }
                 })
-                .compose(user::send);
+                .compose(command.getMessage().getSender()::send)
+                .mapEmpty();
     }
 
     @Override
@@ -139,7 +139,7 @@ public class DefaultCommandManager implements CommandManager {
 
     @Override
     public boolean hasPermission(String command, Contactable user) {
-        var isOwner = Objects.equals(user, Context.get().getOwner());
+        var isOwner = Objects.equals(user.getId(), Context.get().getOwner().getId());
         var contains = Optional.ofNullable(this.permissions(command)).map(p -> p.contains(user)).orElse(false);
         return isOwner || contains;
     }

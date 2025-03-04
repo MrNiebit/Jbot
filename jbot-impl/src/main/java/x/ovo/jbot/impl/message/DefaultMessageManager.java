@@ -5,11 +5,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.dromara.hutool.core.thread.BlockPolicy;
 import org.dromara.hutool.core.thread.ExecutorBuilder;
 import org.dromara.hutool.core.thread.ThreadUtil;
+import x.ovo.jbot.core.Context;
 import x.ovo.jbot.core.command.Command;
 import x.ovo.jbot.core.event.ExceptionEvent;
 import x.ovo.jbot.core.event.MessageEvent;
 import x.ovo.jbot.core.message.MessageManager;
 import x.ovo.jbot.core.message.entity.Message;
+import x.ovo.jbot.core.message.entity.SentMessage;
 import x.ovo.jbot.core.message.entity.TextMessage;
 
 import java.util.Collection;
@@ -34,6 +36,11 @@ public class DefaultMessageManager implements MessageManager {
 
     private ExecutorService executor;
     private boolean flag = true;
+
+    @Override
+    public Future<SentMessage> send(Message message) {
+        return Context.get().getAdapter().getMessageService().send(message);
+    }
 
     @Override
     public Future<Void> onInit() throws Exception {
@@ -88,7 +95,7 @@ public class DefaultMessageManager implements MessageManager {
 
     @Override
     public void handle() {
-        ThreadUtil.execute(() -> {
+        ThreadUtil.newThread(() -> {
             log.info("启动消息处理线程");
             while (this.flag) {
                 try {
@@ -98,7 +105,7 @@ public class DefaultMessageManager implements MessageManager {
                     ExceptionEvent.of(e).publish();
                 }
             }
-        });
+        }, "message-consumer").start();
     }
 
     private void loop() {

@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import x.ovo.jbot.core.command.CommandExecutor;
 import x.ovo.jbot.core.event.CallListener;
 import x.ovo.jbot.core.event.EventListener;
+import x.ovo.jbot.core.message.entity.*;
 import x.ovo.jbot.core.plugin.Plugin;
 
 import java.io.IOException;
@@ -54,6 +55,16 @@ public class PluginFactory {
                 .build();
 
         // 3、将对象注入多语言运行时环境
+        injectClass(jsFile, context);
+
+        // 4、执行js文件获取plugin对象
+        var res = context.eval(Source.newBuilder("js", script, "plugin.mjs").build());
+        var plugin = res.as(Plugin.class);
+        plugin.setRuntime(context);
+        return plugin;
+    }
+
+    private static void injectClass(String jsFile, Context context) {
         var bindings = context.getBindings("js");
         bindings.putMember("log", LoggerFactory.getLogger(jsFile));
         bindings.putMember("vertx", x.ovo.jbot.core.Context.vertx);
@@ -62,11 +73,17 @@ public class PluginFactory {
         bindings.putMember("CallListenerClass", CallListener.class);
         bindings.putMember("CommandExecutorClass", CommandExecutor.class);
 
-        // 4、执行js文件获取plugin对象
-        var res = context.eval(Source.newBuilder("js", script, "plugin.mjs").build());
-        var plugin = res.as(Plugin.class);
-        plugin.setRuntime(context);
-        return plugin;
+        bindings.putMember("MessageClass", Message.class);
+        bindings.putMember("TextMessageClass", TextMessage.class);
+        bindings.putMember("ImageMessageClass", ImageMessage.class);
+        bindings.putMember("VideoMessageClass", VideoMessage.class);
+        bindings.putMember("VoiceMessageClass", VoiceMessage.class);
+        bindings.putMember("BusinessesCardMessageClass", BusinessesCardMessage.class);
+        bindings.putMember("PersonalCardMessageClass", PersonalCardMessage.class);
+        bindings.putMember("EmoteMessageClass", EmoteMessage.class);
+        bindings.putMember("StatusNotifyMessageClass", StatusNotifyMessage.class);
+        bindings.putMember("SystemMessageClass", SystemMessage.class);
+        bindings.putMember("VerifyMessageClass", VerifyMessage.class);
     }
 
 

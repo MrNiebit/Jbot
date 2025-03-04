@@ -34,7 +34,7 @@ public class DebugPluginManager extends DefaultPluginManager {
     private final String path = Context.get().getConfig().getBot().getDebugConfig().getString("path", System.getProperty("user.dir") + File.separator + "jbot-plugins");
     private final String subPath = StrUtil.join(File.separator, "target", "classes");
 
-    private String raw = """
+    private final String raw = """
             {
                 "MsgId" : 766190484,
                 "FromUserName" : {
