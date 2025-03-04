@@ -25,14 +25,14 @@ public class CallbackServer {
                     JsonObject data = body.toJsonObject();
                     log.debug("收到消息：{}", data.encodePrettily());
                     req.response().end();
-                    if (!data.containsKey("data")) return;
+                    if (!data.containsKey("data") && !data.containsKey("Data")) return;
                     Optional.ofNullable(manager).orElseGet(() -> {
                         var m = Context.get().getMessageManager();
                         manager = m;
                         return m;
-                    }).add(MessageFactory.convert(data.getJsonObject("data")));
+                    }).add(MessageFactory.convert(Optional.ofNullable(data.getJsonObject("data")).orElse(data.getJsonObject("Data"))));
                 }))
-                .listen(8511)
+                .listen(GeweAdapter.getConfig().getInteger("callback_port", 8511))
                 .onSuccess(server -> log.info("消息回调服务启动成功，监听端口: {}", server.actualPort()))
                 .compose(v -> LoginServiceImpl.INSTANCE.setCallback())
                 .onFailure(err -> log.warn("消息回调服务启动失败: {}", err.getMessage()));
