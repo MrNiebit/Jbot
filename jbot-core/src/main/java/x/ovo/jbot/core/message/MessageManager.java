@@ -5,6 +5,7 @@ import x.ovo.jbot.core.Context;
 import x.ovo.jbot.core.manager.Manager;
 import x.ovo.jbot.core.manager.ManagerLifeCycle;
 import x.ovo.jbot.core.message.entity.Message;
+import x.ovo.jbot.core.message.entity.SentMessage;
 
 import java.util.Collection;
 
@@ -15,6 +16,7 @@ import java.util.Collection;
  */
 public interface MessageManager extends Manager, ManagerLifeCycle {
 
+    Future<SentMessage> send(Message message);
 
     void add(Message message);
 

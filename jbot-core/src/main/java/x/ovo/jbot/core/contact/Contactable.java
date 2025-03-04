@@ -3,9 +3,10 @@ package x.ovo.jbot.core.contact;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.vertx.core.Future;
+import x.ovo.jbot.core.Context;
 import x.ovo.jbot.core.common.enums.ContactType;
-import x.ovo.jbot.core.message.Sendable;
 import x.ovo.jbot.core.message.entity.Message;
+import x.ovo.jbot.core.message.entity.SentMessage;
 import x.ovo.jbot.core.message.entity.TextMessage;
 import x.ovo.jbot.core.plugin.ContactableJsonDeserializer;
 import x.ovo.jbot.core.plugin.ContactableJsonSerializer;
@@ -50,18 +51,20 @@ public interface Contactable {
     /**
      * 发送信息
      *
-     * @param sendable 可发送的信息
+     * @param message 消息
      * @return {@link Future }<{@link Void }>
      */
-    default Future<Void> send(Sendable sendable) {
-        System.out.println("sendable:" + ((Message)sendable).getContent());
-        return sendable.send(this);
+    default Future<SentMessage> send(Message message) {
+        message.setReceiver(this);
+        message.setSender(Context.get().getBot());
+        return Context.get().getMessageManager().send(message);
     }
 
-    default Future<Void> send(String content) {
+    default Future<SentMessage> send(String content) {
         var msg = new TextMessage();
         msg.setContent(content);
         msg.setReceiver(this);
+        msg.setSender(Context.get().getBot());
         return this.send(msg);
     }
 

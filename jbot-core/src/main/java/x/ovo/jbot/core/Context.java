@@ -24,6 +24,7 @@ public final class Context {
     public static final Vertx vertx = Vertx.vertx();
     private static final Context INSTANCE = new Context();
 
+    private Friend bot;
     private Friend owner;
     private JBotConfig config;
 

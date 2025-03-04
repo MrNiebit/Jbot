@@ -19,6 +19,7 @@ public class AppMessage extends Message {
     protected String desc;
     protected String url;
     protected AppInfo appinfo;
+    protected String xml;
 
     @Data
     @Builder

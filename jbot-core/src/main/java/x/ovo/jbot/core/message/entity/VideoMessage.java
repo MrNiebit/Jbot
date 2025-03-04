@@ -19,7 +19,8 @@ public class VideoMessage extends Message implements Downloadable {
 
     private String aesKey;
     private String fileUrl;
-    private int playLength;
+    private String thumbUrl;
+    private int duration;
     private int size;
     private String md5;
     private String newMd5;
@@ -32,6 +33,6 @@ public class VideoMessage extends Message implements Downloadable {
 
     @Override
     public String getContent() {
-        return String.format("时长: %d s 大小: %s", this.playLength, FileUtil.readableFileSize(this.size));
+        return String.format("时长: %d s 大小: %s", this.duration, FileUtil.readableFileSize(this.size));
     }
 }

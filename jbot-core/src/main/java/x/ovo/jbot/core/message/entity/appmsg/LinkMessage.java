@@ -16,6 +16,8 @@ public class LinkMessage extends AppMessage{
 
     {this.type = MessageType.APPMSG_LINK;}
 
+    private String thumbUrl;
+
     @Override
     public String getContent() {
         return String.format("[%s] (%s) %s", this.title, this.desc, this.url);

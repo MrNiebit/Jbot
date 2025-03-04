@@ -20,7 +20,7 @@ public class VoiceMessage extends Message implements Downloadable {
     private String aesKey;
     private String fileUrl;
     private int size;
-    private int length;
+    private int duration;
 
     @Override
     public int getFileType() {
@@ -29,6 +29,6 @@ public class VoiceMessage extends Message implements Downloadable {
 
     @Override
     public String getContent() {
-        return String.format("时长: %d s 大小: %s", this.length / 1000, FileUtil.readableFileSize(this.size));
+        return String.format("时长: %d s 大小: %s", this.duration / 1000, FileUtil.readableFileSize(this.size));
     }
 }

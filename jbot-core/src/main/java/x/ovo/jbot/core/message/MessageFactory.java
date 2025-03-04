@@ -103,7 +103,7 @@ public class MessageFactory {
             msg.setNewMd5(video.getAttribute("newmd5"));
             msg.setFileUrl(video.getAttribute("cdnvideourl"));
             msg.setSize(Integer.parseInt(video.getAttribute("length")));
-            msg.setPlayLength(Integer.parseInt(video.getAttribute("playlength")));
+            msg.setDuration(Integer.parseInt(video.getAttribute("playlength")));
             return msg;
         };
     }
@@ -116,7 +116,7 @@ public class MessageFactory {
             var voice = XmlUtil.getElement(root, "voicemsg");
             msg.setAesKey(voice.getAttribute("aeskey"));
             msg.setFileUrl(voice.getAttribute("voiceurl"));
-            msg.setLength(Integer.parseInt(voice.getAttribute("voicelength")));
+            msg.setDuration(Integer.parseInt(voice.getAttribute("voicelength")));
             msg.setSize(Integer.parseInt(voice.getAttribute("length")));
             return msg;
         };
