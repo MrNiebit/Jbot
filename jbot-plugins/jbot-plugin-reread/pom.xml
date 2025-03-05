@@ -10,7 +10,7 @@
     </parent>
 
     <groupId>x.ovo.jbot.plugin</groupId>
-    <artifactId>jbot-plugin-jsTest</artifactId>
+    <artifactId>jbot-plugin-reread</artifactId>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
