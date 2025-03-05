@@ -72,7 +72,7 @@ public abstract class Plugin implements PluginLifeCycle, Comparable<Plugin> {
      *
      * @return {@link File }
      */
-    protected final File getDataDir() {
+    public final File getDataDir() {
         return new File(JBotFiles.PLUGIN_DIR, this.description.getName());
     }
 
@@ -95,16 +95,17 @@ public abstract class Plugin implements PluginLifeCycle, Comparable<Plugin> {
      * @apiNote 如说明所述，当插件数据目录已经存在配置文件时调用此方法，在持久化内存中配置时，会覆盖原配置文件，配置文件中的注释将消失
      */
     protected final void saveConfig() throws IOException {
-        var files = this.getDataDir().listFiles((dir, name) -> name.startsWith(JBotConstant.CONFIG_JSON5));
+        var files = this.getDataDir().listFiles((dir, name) -> name.startsWith(JBotConstant.CONFIG_JSON));
         if (Objects.nonNull(files) && files.length > 0) {
             // 如果插件数据目录下已经存在配置文件，将会覆盖原配置文件
             this.vertx.fileSystem().writeFileBlocking(files[0].getPath(), Buffer.buffer(this.config.encodePrettily()));
         } else {
             // 如果插件数据目录下不存在配置文件，将会输出默认配置文件
             @Cleanup var is = Optional.ofNullable(
-                    Optional.ofNullable(this.getClass().getResourceAsStream(JBotConstant.CONFIG_JSON5))
-                            .orElse(this.getClass().getResourceAsStream(JBotConstant.CONFIG_JSON))
+                    Optional.ofNullable(this.getClassLoader().getResourceAsStream(JBotConstant.CONFIG_JSON5))
+                            .orElse(this.getClassLoader().getResourceAsStream(JBotConstant.CONFIG_JSON))
             ).orElseThrow(() -> new PluginException("无法找到默认配置文件"));
+            this.vertx.fileSystem().mkdirsBlocking(this.getDataDir().getPath());
             this.vertx.fileSystem().writeFileBlocking(new File(this.getDataDir(), JBotConstant.CONFIG_JSON5).getPath(), Buffer.buffer(is.readAllBytes()));
         }
     }
@@ -112,14 +113,19 @@ public abstract class Plugin implements PluginLifeCycle, Comparable<Plugin> {
 
     public void saveDefaultConfig() {
         // 如果存在配置文件，则创建相应文件夹并输出默认配置文件
-        if (Objects.nonNull(this.getClassLoader().findResource(JBotConstant.CONFIG_JSON5))) {
+        var file = Optional.ofNullable(this.getClassLoader().findResource(JBotConstant.CONFIG_JSON5)).orElse(this.getClassLoader().findResource(JBotConstant.CONFIG_JSON));
+        if (Objects.nonNull(file) && !this.getDataDir().exists()) {
             try {
-                this.saveConfig();
+                // 如果插件数据目录下不存在配置文件，将会输出默认配置文件
+                @Cleanup var is = Optional.ofNullable(
+                        Optional.ofNullable(this.getClassLoader().getResourceAsStream(JBotConstant.CONFIG_JSON5))
+                                .orElse(this.getClassLoader().getResourceAsStream(JBotConstant.CONFIG_JSON))
+                ).orElseThrow(() -> new PluginException("无法找到默认配置文件"));
+                this.vertx.fileSystem().mkdirsBlocking(this.getDataDir().getPath());
+                this.vertx.fileSystem().writeFileBlocking(new File(this.getDataDir(), JBotConstant.CONFIG_JSON5).getPath(), Buffer.buffer(is.readAllBytes()));
             } catch (IOException e) {
                 log.warn("无法保存配置文件: {}", e.getMessage());
             }
-            // 读取配置文件
-            this.config = this.vertx.fileSystem().readFileBlocking(new File(this.getDataDir(), JBotConstant.CONFIG_JSON5).getPath()).toJsonObject();
         }
     }
 }
