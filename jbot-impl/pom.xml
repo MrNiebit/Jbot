@@ -39,7 +39,7 @@
             <groupId>x.ovo.jbot.runtime</groupId>
             <artifactId>jbot-js-provider</artifactId>
             <version>1.0-SNAPSHOT</version>
-            <scope>runtime</scope>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 

@@ -9,8 +9,7 @@ import org.graalvm.polyglot.io.FileSystem;
 import org.graalvm.polyglot.io.IOAccess;
 import org.slf4j.LoggerFactory;
 import x.ovo.jbot.core.command.CommandExecutor;
-import x.ovo.jbot.core.event.CallListener;
-import x.ovo.jbot.core.event.EventListener;
+import x.ovo.jbot.core.event.*;
 import x.ovo.jbot.core.message.entity.*;
 import x.ovo.jbot.core.plugin.Plugin;
 
@@ -72,6 +71,13 @@ public class PluginFactory {
         bindings.putMember("EventListenerClass", EventListener.class);
         bindings.putMember("CallListenerClass", CallListener.class);
         bindings.putMember("CommandExecutorClass", CommandExecutor.class);
+
+        bindings.putMember("EventClass", Event.class);
+        bindings.putMember("MessageEventClass", MessageEvent.class);
+        bindings.putMember("ExceptionEventClass", ExceptionEvent.class);
+        bindings.putMember("LoginSystemEventClass", LoginSystemEvent.class);
+        bindings.putMember("PluginExceptionEventClass", PluginExceptionEvent.class);
+        bindings.putMember("SystemEventClass", SystemEvent.class);
 
         bindings.putMember("MessageClass", Message.class);
         bindings.putMember("TextMessageClass", TextMessage.class);

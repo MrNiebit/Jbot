@@ -15,7 +15,7 @@ public class Main {
             bot.initManager().await();
             bot.start()
                     .onSuccess(v -> log.info("JBot 启动成功"))
-                    .onFailure(e -> log.error("JBot 启动失败：{}", e.getMessage()));
+                    .onFailure(e -> log.error("JBot 启动失败：{}", e.getMessage(), e));
         } catch (Exception e) {
             log.error("JBot 启动失败：{}", e.getMessage(), e);
             System.exit(1);

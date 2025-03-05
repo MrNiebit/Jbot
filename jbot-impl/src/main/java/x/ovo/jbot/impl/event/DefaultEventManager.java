@@ -4,17 +4,15 @@ import io.vertx.core.Future;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import x.ovo.jbot.core.Context;
-import x.ovo.jbot.core.event.EventListener;
 import x.ovo.jbot.core.event.*;
+import x.ovo.jbot.core.event.EventListener;
 import x.ovo.jbot.core.plugin.Plugin;
-import x.ovo.jbot.core.plugin.PluginManager;
 
 import java.util.*;
 
 @Slf4j
 public class DefaultEventManager implements EventManager {
 
-    private final PluginManager pluginManager = Context.get().getPluginManager();
     private final List<Plugin> plugins = new ArrayList<>();
     @SuppressWarnings("rawtypes")
     private final Map<Plugin, EventListener> container = new HashMap<>(16);
@@ -62,7 +60,7 @@ public class DefaultEventManager implements EventManager {
                 // 如果是群消息事件，检查插件是否在限制名单中
                 if (event instanceof MessageEvent<?> e && e.getData().isGroup()) {
                     var target = e.getData().getSender();
-                    if (this.pluginManager.isLimited(plugin, target)) {
+                    if (Context.get().getPluginManager().isLimited(plugin, target)) {
                         log.debug("[{}] 插件在群 [{}] 限制名单中，跳过执行", plugin.getDescription().getName(), target.getNickname());
                         continue;
                     }

@@ -21,6 +21,6 @@
   },
   // 适配器相关配置
   "adapter": {
-    "name": "x.ovo.jbot.WebAdapter"
+    "name": "x.ovo.jbot.adapter.gewe.GeweAdapter"
   }
 }
