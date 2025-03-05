@@ -21,6 +21,11 @@ public class AppMessage extends Message {
     protected AppInfo appinfo;
     protected String xml;
 
+    @Override
+    public String getContent() {
+        return String.format("标题: %s\t描述: %s\tURL: %s", this.title, this.desc, this.url);
+    }
+
     @Data
     @Builder
     @NoArgsConstructor

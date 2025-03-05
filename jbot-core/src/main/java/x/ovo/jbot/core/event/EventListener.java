@@ -6,6 +6,7 @@ import x.ovo.jbot.core.plugin.Plugin;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.Optional;
 
 /**
  * 事件监听器
@@ -68,7 +69,7 @@ public abstract class EventListener<E extends Event<S>, S> {
      * @return 布尔值
      */
     public boolean executeNext() {
-        return this.plugin.getConfig().getBoolean("next", true);
+        return Optional.ofNullable(this.plugin.getConfig()).map(config -> config.getBoolean("next", true)).orElse(true);
     }
 
 }
