@@ -14,6 +14,7 @@
     <description>jbot插件</description>
     <modules>
         <module>jbot-plugin-pm</module>
+        <module>jbot-plugin-kfc</module>
     </modules>
 
     <dependencies>

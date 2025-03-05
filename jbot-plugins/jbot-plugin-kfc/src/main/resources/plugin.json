@@ -1,0 +1,7 @@
+{
+  "name": "kfc",
+  "main": "x.ovo.jbot.plugin.kfc.KfcPlugin",
+  "version": "1.0.0",
+  "description": "疯狂星期四",
+  "authors": ["ovo"]
+}
