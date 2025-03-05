@@ -2,6 +2,7 @@ package x.ovo.jbot.impl.plugin;
 
 import lombok.Cleanup;
 import lombok.SneakyThrows;
+import org.dromara.hutool.core.text.StrUtil;
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.HostAccess;
 import org.graalvm.polyglot.Source;
@@ -9,6 +10,7 @@ import org.graalvm.polyglot.io.FileSystem;
 import org.graalvm.polyglot.io.IOAccess;
 import org.slf4j.LoggerFactory;
 import x.ovo.jbot.core.command.CommandExecutor;
+import x.ovo.jbot.core.common.exception.PluginException;
 import x.ovo.jbot.core.event.*;
 import x.ovo.jbot.core.message.entity.*;
 import x.ovo.jbot.core.plugin.Plugin;
@@ -32,6 +34,7 @@ public class PluginFactory {
 
 
     public static Plugin load(ClassLoader classLoader, String className) throws IOException {
+        if (StrUtil.isBlank(className)) throw new PluginException("插件主类或文件名不能为空");
         return className.endsWith("js") ? loadJsPlugin(classLoader, className) : loadJavaPlugin(classLoader, className);
     }
 
