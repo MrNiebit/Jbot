@@ -81,10 +81,4 @@ public final class ApiUtil {
                 }))
                 .onFailure(e -> log.debug("request: POST [{}] {}\nfailure: {}", path, body, e.getMessage()));
     }
-
-    public static Future<Void> test() {
-        return HTTP_CLIENT.request()
-                .compose(req -> Future.<Void>future(p -> log.debug("sdk连接成功")))
-                .recover(t -> Future.failedFuture(new ApiException("sdk连接失败", t)));
-    }
 }

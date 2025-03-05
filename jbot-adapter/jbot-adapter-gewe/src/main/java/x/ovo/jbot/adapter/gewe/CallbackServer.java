@@ -33,8 +33,12 @@ public class CallbackServer {
                     }).add(MessageFactory.convert(Optional.ofNullable(data.getJsonObject("data")).orElse(data.getJsonObject("Data"))));
                 }))
                 .listen(GeweAdapter.getConfig().getInteger("callback_port", 8511))
-                .onSuccess(server -> log.info("消息回调服务启动成功，监听端口: {}", server.actualPort()))
-                .compose(v -> LoginServiceImpl.INSTANCE.setCallback())
+                .onSuccess(server -> {
+                    log.info("消息回调服务启动成功，监听端口: {}", server.actualPort());
+                    LoginServiceImpl.INSTANCE.setCallback()
+                            .onSuccess(v -> log.debug("消息回调设置成功"))
+                            .onFailure(t -> log.warn("消息回调设置失败: {}", t.getMessage()));
+                })
                 .onFailure(err -> log.warn("消息回调服务启动失败: {}", err.getMessage()));
     }
 }
