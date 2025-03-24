@@ -31,7 +31,7 @@ public final class ApiUtil {
                 .setDefaultPort(GeweAdapter.getConfig().getInteger("port"));
         HTTP_CLIENT = Context.vertx.createHttpClient(options);
 
-        log.info("api连接工具初始化完成, host:{}, port: {}", options.getDefaultHost(), options.getDefaultPort());
+        log.info("api连接工具初始化完成, host: {}, port: {}", options.getDefaultHost(), options.getDefaultPort());
     }
 
     public static Future<JsonObject> get(String path) {

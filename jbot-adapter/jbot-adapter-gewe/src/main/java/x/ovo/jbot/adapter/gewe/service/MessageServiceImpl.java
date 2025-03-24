@@ -24,23 +24,6 @@ public enum MessageServiceImpl implements MessageService {
     INSTANCE;
 
     @Override
-    public Future<SentMessage> send(Message message) {
-        return switch (message.getType()) {
-            case TEXT -> this.sendText((TextMessage) message);
-            case FILE -> this.sendFile((FileMessage) message);
-            case IMAGE -> this.sendImage((ImageMessage) message);
-            case VOICE -> this.sendVoice((VoiceMessage) message);
-            case VIDEO -> this.sendVideo((VideoMessage) message);
-            case EMOTICON -> this.sendEmoji((EmoteMessage) message);
-            case PERSONAL_CARD -> this.sendCard((PersonalCardMessage) message);
-            case APPMSG -> this.sendAppmsg((AppMessage) message);
-            case APPMSG_APPLET -> this.sendApplet((AppletMessage) message);
-            case APPMSG_LINK -> this.sendLink((LinkMessage) message);
-            default -> throw new IllegalArgumentException("未实现的发送类型：" + message.getType());
-        };
-    }
-
-    @Override
     public Future<SentMessage> sendText(TextMessage message) {
         var content = message.getContent();
         if (StrUtil.isNotBlank(message.getAts())) {
@@ -60,8 +43,7 @@ public enum MessageServiceImpl implements MessageService {
                 "ats", message.getAts()
         );
         return ApiUtil.post("/message/postText", body)
-                .compose(json -> this.buildSentMessage(json, message))
-                .onFailure(t -> message.onSend(false).accept(log));
+                .compose(json -> this.buildSentMessage(json, message));
     }
 
     @Override
@@ -72,16 +54,14 @@ public enum MessageServiceImpl implements MessageService {
                 "fileName", message.getName()
         );
         return ApiUtil.post("/message/postFile", body)
-                .compose(json -> this.buildSentMessage(json, message))
-                .onFailure(t -> message.onSend(false).accept(log));
+                .compose(json -> this.buildSentMessage(json, message));
     }
 
     @Override
     public Future<SentMessage> sendImage(ImageMessage message) {
         JsonObject body = JsonObject.of("toWxid", message.getReceiver().getId(), "imgUrl", message.getFileUrl());
         return ApiUtil.post("/message/postImage", body)
-                .compose(json -> this.buildSentMessage(json, message))
-                .onFailure(t -> message.onSend(false).accept(log));
+                .compose(json -> this.buildSentMessage(json, message));
     }
 
     @Override
@@ -93,8 +73,7 @@ public enum MessageServiceImpl implements MessageService {
                 "videoDuration", message.getDuration()
         );
         return ApiUtil.post("/message/postVideo", body)
-                .compose(json -> this.buildSentMessage(json, message))
-                .onFailure(t -> message.onSend(false).accept(log));
+                .compose(json -> this.buildSentMessage(json, message));
     }
 
     @Override
@@ -105,8 +84,7 @@ public enum MessageServiceImpl implements MessageService {
                 "voiceDuration", message.getDuration()
         );
         return ApiUtil.post("/message/postVoice", body)
-                .compose(json -> this.buildSentMessage(json, message))
-                .onFailure(t -> message.onSend(false).accept(log));
+                .compose(json -> this.buildSentMessage(json, message));
     }
 
     @Override
@@ -116,8 +94,7 @@ public enum MessageServiceImpl implements MessageService {
                 "emojiMd5", message.getMd5()
         );
         return ApiUtil.post("/message/postEmoji", body)
-                .compose(json -> this.buildSentMessage(json, message))
-                .onFailure(t -> message.onSend(false).accept(log));
+                .compose(json -> this.buildSentMessage(json, message));
     }
 
     @Override
@@ -130,16 +107,14 @@ public enum MessageServiceImpl implements MessageService {
                 "thumbUrl", message.getThumbUrl()
         );
         return ApiUtil.post("/message/postLink", body)
-                .compose(json -> this.buildSentMessage(json, message))
-                .onFailure(t -> message.onSend(false).accept(log));
+                .compose(json -> this.buildSentMessage(json, message));
     }
 
     @Override
     public Future<SentMessage> sendAppmsg(AppMessage message) {
         var body = JsonObject.of("toWxid", message.getReceiver().getId(), "appmsg", message.getXml());
         return ApiUtil.post("/message/postAppMsg", body)
-                .compose(json -> this.buildSentMessage(json, message))
-                .onFailure(t -> message.onSend(false).accept(log));
+                .compose(json -> this.buildSentMessage(json, message));
     }
 
     @Override
@@ -150,8 +125,7 @@ public enum MessageServiceImpl implements MessageService {
                 "nameCardWxid", message.getSender().getId()
         );
         return ApiUtil.post("/message/postNameCard", body)
-                .compose(json -> this.buildSentMessage(json, message))
-                .onFailure(t -> message.onSend(false).accept(log));
+                .compose(json -> this.buildSentMessage(json, message));
     }
 
     @Override
@@ -166,8 +140,7 @@ public enum MessageServiceImpl implements MessageService {
                 "userName", message.getOwner()
         );
         return ApiUtil.post("/message/postMiniApp", body)
-                .compose(json -> this.buildSentMessage(json, message))
-                .onFailure(t -> message.onSend(false).accept(log));
+                .compose(json -> this.buildSentMessage(json, message));
     }
 
     @Override
@@ -233,7 +206,6 @@ public enum MessageServiceImpl implements MessageService {
     }
 
     private Future<SentMessage> buildSentMessage(JsonObject json, Message message) {
-        message.onSend(json.getInteger("ret") == 200).accept(log);
         return Future.future(promise -> {
             var data = json.getJsonObject("data");
             var msg = new SentMessage();

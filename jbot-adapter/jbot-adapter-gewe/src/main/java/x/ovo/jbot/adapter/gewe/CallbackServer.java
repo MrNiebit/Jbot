@@ -30,7 +30,7 @@ public class CallbackServer {
                         var m = Context.get().getMessageManager();
                         manager = m;
                         return m;
-                    }).add(MessageFactory.convert(Optional.ofNullable(data.getJsonObject("data")).orElse(data.getJsonObject("Data"))));
+                    }).addReceive(MessageFactory.convert(Optional.ofNullable(data.getJsonObject("data")).orElse(data.getJsonObject("Data"))));
                 }))
                 .listen(GeweAdapter.getConfig().getInteger("callback_port", 8511))
                 .onSuccess(server -> {

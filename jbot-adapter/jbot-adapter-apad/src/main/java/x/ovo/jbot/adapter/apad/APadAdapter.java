@@ -1,4 +1,4 @@
-package x.ovo.jbot.adapter.gewe;
+package x.ovo.jbot.adapter.apad;
 
 import io.vertx.core.Future;
 import io.vertx.core.buffer.Buffer;
@@ -6,56 +6,28 @@ import io.vertx.core.file.FileSystem;
 import io.vertx.core.json.JsonObject;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import x.ovo.jbot.adapter.gewe.service.ContactServiceImpl;
-import x.ovo.jbot.adapter.gewe.service.GroupServiceImpl;
-import x.ovo.jbot.adapter.gewe.service.LoginServiceImpl;
-import x.ovo.jbot.adapter.gewe.service.MessageServiceImpl;
+import x.ovo.jbot.adapter.apad.service.*;
 import x.ovo.jbot.core.Context;
 import x.ovo.jbot.core.adapter.Adapter;
 import x.ovo.jbot.core.common.constant.JBotFiles;
 import x.ovo.jbot.core.service.*;
 
 import java.io.File;
-import java.util.Optional;
 
-/**
- * GEWE 适配器
- *
- * @author ovo created on 2025/02/23.
- */
 @Slf4j
-public class GeweAdapter implements Adapter {
+public class APadAdapter implements Adapter {
 
     private static @Getter JsonObject config;
-    private static final String NAME = "gewe-adapter";
-
-    @Override
-    public Future<Void> onInit(JsonObject cfg) {
-        return Future.future(promise -> {
-            FileSystem fs = Context.vertx.fileSystem();
-            String path = new File(JBotFiles.ADAPTER_DIR, this.name() + File.separator + "config.json").getPath();
-            // 如果存在配置文件，则合并配置
-            if (fs.existsBlocking(path)) cfg.mergeIn(fs.readFileBlocking(path).toJsonObject());
-            log.debug("adapter config: {}", cfg.encodePrettily());
-            // api工具设置token与deviceId
-            GeweAdapter.config = cfg;
-            ApiUtil.setHeader(Optional.ofNullable(cfg.getString("token")).orElse(""));
-            ApiUtil.setDeviceId(Optional.ofNullable(cfg.getString("device_id")).orElse(""));
-            log.info("Gewe adapter 初始化完成");
-            promise.complete();
-        });
-    }
-
-    @Override
-    public Future<Void> onDestroy() {
-        return saveConfig();
-    }
+    public static final String NAME = "apad-adapter";
 
     public static Future<Void> saveConfig() {
         String path = new File(JBotFiles.ADAPTER_DIR, NAME + File.separator + "config.json").getPath();
         return Context.vertx.fileSystem()
-                .writeFile(path, Buffer.buffer(config.encodePrettily()))
-                .onSuccess(v -> log.debug("配置文件保存成功"));
+                .mkdirs(new File(JBotFiles.ADAPTER_DIR, NAME).getPath())
+                .onSuccess(i -> Context.vertx.fileSystem()
+                        .writeFile(path, Buffer.buffer(config.encodePrettily()))
+                        .onSuccess(v -> log.debug("配置文件保存成功"))
+                );
     }
 
     @Override
@@ -74,9 +46,9 @@ public class GeweAdapter implements Adapter {
                 }))
                 //  2、获取联系人信息存入联系人管理器中
                 .compose(v -> this.getContactService().list())
-                //  3、开启回调服务器
-                .compose(v -> Future.<Void>succeededFuture())
-                .onSuccess(v -> CallbackServer.start());
+                //  3、开启消息同步
+                .onSuccess(v -> SyncService.start())
+                .mapEmpty();
     }
 
     @Override
@@ -127,5 +99,25 @@ public class GeweAdapter implements Adapter {
     @Override
     public SnsService getSnsService() {
         return null;
+    }
+
+    @Override
+    public Future<Void> onInit(JsonObject cfg) {
+        return Future.future(promise -> {
+            FileSystem fs = Context.vertx.fileSystem();
+            String path = new File(JBotFiles.ADAPTER_DIR, this.name() + File.separator + "config.json").getPath();
+            // 如果存在配置文件，则合并配置
+            if (fs.existsBlocking(path)) cfg.mergeIn(fs.readFileBlocking(path).toJsonObject());
+            log.debug("adapter config: {}", cfg.encodePrettily());
+            // api工具设置token与deviceId
+            APadAdapter.config = cfg;
+            log.info(NAME + " 初始化完成");
+            promise.complete();
+        });
+    }
+
+    @Override
+    public Future<Void> onDestroy() {
+        return saveConfig();
     }
 }
