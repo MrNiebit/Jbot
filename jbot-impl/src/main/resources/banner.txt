@@ -10,4 +10,5 @@
         |  '-'  /       | '--'  /         `'  '-'  '         |  |
          `-----'        `------'            `-----'          `--'
 
+        Github: https://github.com/sbgayhub/Jbot ⭐给个star吧⭐
         欢迎使用JBot，当前版本：${project.version}，构建时间：${maven.build.timestamp}
