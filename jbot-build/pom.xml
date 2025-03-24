@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>x.ovo.jbot</groupId>
+    <artifactId>jbot-build</artifactId>
+    <version>${revision}</version>
+    <packaging>pom</packaging>
+
+    <name>jbot build ${project.version}</name>
+    <description>定义项目版本及全局配置</description>
+
+    <properties>
+        <revision>0.0.1</revision>
+        <java.version>21</java.version>
+        <build.platform>windows-x86_64</build.platform>
+
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
+        <maven.compiler.release>${java.version}</maven.compiler.release>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss</maven.build.timestamp.format>
+
+        <ver.vertx>5.0.0.CR5</ver.vertx>
+        <ver.lombok>1.18.36</ver.lombok>
+        <ver.validator>6.2.5.Final</ver.validator>
+        <ver.zxing>3.5.3</ver.zxing>
+        <ver.jemoji>1.6.0</ver.jemoji>
+        <ver.slf4j>2.0.16</ver.slf4j>
+        <ver.picocli>4.7.6</ver.picocli>
+        <ver.logback>1.5.12</ver.logback>
+        <ver.hutool>6.0.0-M19</ver.hutool>
+        <ver.jackson>2.15.4</ver.jackson>
+        <ver.junit>5.10.3</ver.junit>
+        <ver.javacv>1.5.11</ver.javacv>
+        <ver.ffmpeg>7.1</ver.ffmpeg>
+
+
+        <easyj-maven-plugin.version>1.1.5</easyj-maven-plugin.version>
+    </properties>
+
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>icu.easyj.maven.plugins</groupId>
+                <artifactId>easyj-maven-plugin</artifactId>
+                <version>${easyj-maven-plugin.version}</version>
+                <configuration>
+                    <!-- 是否更新pom文件（默认：false） -->
+                    <updatePomFile>true</updatePomFile>
+                    <!-- 扁平化后的pom文件名（默认：.simplified-pom.xml） -->
+                    <simplifiedPomFileName>.flattened-pom.xml</simplifiedPomFileName>
+                    <!-- <name>内容模板，用于生成所有子模块的<name>，例：'${project.groupId}::${project.artifactId}' -->
+<!--                    <artifactNameTemplate></artifactNameTemplate>-->
+                    <!-- 是否开源项目，开源项目下，部分信息标签必须（默认：true） -->
+                    <isOpenSourceProject>false</isOpenSourceProject>
+                    <!-- 是否使用制表符`\t`代替两个空格进行缩进（v1.0.1新特性）（默认：false） -->
+                    <useTabIndent>true</useTabIndent>
+                    <!-- 需移除的依赖，支持配置完整groupId:artifactId、通配符、正则表达式。 -->
+                    <excludeDependencies>
+                        <exclude>icu.easyj:easyj-all</exclude>
+                        <exclude>icu.easyj:*</exclude>
+                        <exclude>^icu\.easyj\:easyj\-.*$</exclude>
+                    </excludeDependencies>
+                </configuration>
+                <executions>
+                    <!-- 扁平化，生成扁平化后的pom文件 -->
+                    <execution>
+                        <id>simplify-pom</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>simplify-pom</goal>
+                        </goals>
+                    </execution>
+                    <!-- 清除扁平化后的pom文件 -->
+                    <execution>
+                        <id>clean-simplify-pom</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>clean-simplify-pom</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

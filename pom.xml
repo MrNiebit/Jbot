@@ -4,14 +4,22 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>x.ovo.jbot</groupId>
-    <artifactId>Jbot</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <parent>
+        <groupId>x.ovo.jbot</groupId>
+        <artifactId>jbot-build</artifactId>
+        <version>${revision}</version>
+        <relativePath>./jbot-build/pom.xml</relativePath>
+    </parent>
+
+    <artifactId>jbot-parent</artifactId>
     <packaging>pom</packaging>
 
+    <name>jbot parent pom ${project.version}</name>
     <description>Jbot - 专注于微信机器人的Java实现</description>
 
     <modules>
+        <module>jbot-build</module>
+        <module>jbot-bom</module>
         <module>jbot-core</module>
         <module>jbot-impl</module>
         <module>jbot-adapter</module>
@@ -19,12 +27,13 @@
         <module>jbot-js-provider</module>
     </modules>
 
-    <properties>
-        <maven.compiler.source>21</maven.compiler.source>
-        <maven.compiler.target>21</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss</maven.build.timestamp.format>
-    </properties>
+<!--    <properties>-->
+<!--        <revision>0.0.1</revision>-->
+<!--        <maven.compiler.source>21</maven.compiler.source>-->
+<!--        <maven.compiler.target>21</maven.compiler.target>-->
+<!--        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>-->
+<!--        <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss</maven.build.timestamp.format>-->
+<!--    </properties>-->
 
     <dependencyManagement>
         <dependencies>
@@ -67,14 +76,14 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.11.0</version>
                 <configuration>
-                    <source>21</source>
-                    <target>21</target>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
 <!--                    <enablePreview>true</enablePreview>-->
                     <annotationProcessorPaths>
                         <path>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
-                            <version>1.18.36</version>
+                            <version>${ver.lombok}</version>
                         </path>
                     </annotationProcessorPaths>
                 </configuration>

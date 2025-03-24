@@ -4,32 +4,21 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>x.ovo.jbot</groupId>
-    <version>1.0-SNAPSHOT</version>
+    <parent>
+        <groupId>x.ovo.jbot</groupId>
+        <artifactId>jbot-build</artifactId>
+        <version>${revision}</version>
+        <relativePath>../jbot-build/pom.xml</relativePath>
+    </parent>
+
     <artifactId>jbot-bom</artifactId>
     <packaging>pom</packaging>
+    <name>jbot bom ${project.version}</name>
     <description>jbot的依赖声明</description>
 
     <properties>
-        <maven.compiler.source>23</maven.compiler.source>
-        <maven.compiler.target>23</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <ver.vertx>5.0.0.CR5</ver.vertx>
-        <ver.lombok>1.18.36</ver.lombok>
-        <ver.validator>6.2.5.Final</ver.validator>
-        <ver.zxing>3.5.3</ver.zxing>
-        <ver.jemoji>1.6.0</ver.jemoji>
-        <ver.slf4j>2.0.16</ver.slf4j>
-        <ver.picocli>4.7.6</ver.picocli>
-        <ver.logback>1.5.12</ver.logback>
-        <ver.hutool>6.0.0-M19</ver.hutool>
-        <ver.jackson>2.15.4</ver.jackson>
-        <ver.junit>5.10.3</ver.junit>
-        <ver.javacv>1.5.11</ver.javacv>
-        <ver.ffmpeg>7.1</ver.ffmpeg>
 
-        <javacpp.platform>windows-x86_64</javacpp.platform>
     </properties>
 
     <dependencyManagement>
@@ -37,6 +26,11 @@
             <dependency>
                 <groupId>x.ovo.jbot</groupId>
                 <artifactId>jbot-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>x.ovo.jbot.runtime</groupId>
+                <artifactId>jbot-js-provider</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <!-- vertx依赖管理 -->
@@ -112,7 +106,7 @@
                 <groupId>org.bytedeco</groupId>
                 <artifactId>ffmpeg</artifactId>
                 <version>${ver.ffmpeg}-${ver.javacv}</version>
-                <classifier>${javacpp.platform}</classifier>
+                <classifier>${build.platform}</classifier>
             </dependency>
 
             <!-- 单元测试 -->

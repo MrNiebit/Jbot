@@ -6,7 +6,8 @@
     <parent>
         <groupId>x.ovo.jbot</groupId>
         <artifactId>jbot-adapter</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>${revision}</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>jbot-adapter-apad</artifactId>
@@ -20,7 +21,8 @@
         <dependency>
             <groupId>org.bytedeco</groupId>
             <artifactId>ffmpeg</artifactId>
-            <classifier>windows-x86_64</classifier>
+            <version>${ver.ffmpeg}-${ver.javacv}</version>
+            <classifier>${build.platform}</classifier>
         </dependency>
     </dependencies>
 
