@@ -30,16 +30,22 @@ import java.util.concurrent.locks.ReentrantLock;
 @Slf4j
 public class DefaultMessageManager implements MessageManager {
 
-    private static final ReentrantLock LOCK = new ReentrantLock();
-    private static final Condition SINGLE = LOCK.newCondition();
-    private static final ConcurrentLinkedQueue<Message> QUEUE = new ConcurrentLinkedQueue<>();
+    private static final ReentrantLock SEND_LOCK = new ReentrantLock();
+    private static final ReentrantLock RECEIVE_LOCK = new ReentrantLock();
+    private static final Condition SEND_SINGLE = SEND_LOCK.newCondition();
+    private static final Condition RECEIVE_SINGLE = RECEIVE_LOCK.newCondition();
+    private static final ConcurrentLinkedQueue<Message> SEND_QUEUE = new ConcurrentLinkedQueue<>();
+    private static final ConcurrentLinkedQueue<Message> RECEIVE_QUEUE = new ConcurrentLinkedQueue<>();
 
     private ExecutorService executor;
     private boolean flag = true;
 
     @Override
     public Future<SentMessage> send(Message message) {
-        return Context.get().getAdapter().getMessageService().send(message);
+        // todo 如果消息发送间隔太短，可能会发送失败
+        return Context.get().getAdapter().getMessageService().send(message)
+                .onSuccess(m -> message.onSend(true).accept(log))
+                .onFailure(t -> message.onSend(false).accept(log));
     }
 
     @Override
@@ -67,29 +73,29 @@ public class DefaultMessageManager implements MessageManager {
     }
 
     @Override
-    public void add(Message message) {
-        LOCK.lock();
+    public void addReceive(Message message) {
+        RECEIVE_LOCK.lock();
         try {
-            if (QUEUE.size() <= 1000) {
-                QUEUE.add(message);
-                SINGLE.signalAll();
-                log.debug("消息队列添加成功，当前队列长度：{}", QUEUE.size());
+            if (RECEIVE_QUEUE.size() <= 1000) {
+                RECEIVE_QUEUE.add(message);
+                RECEIVE_SINGLE.signalAll();
+                log.debug("消息队列添加成功，当前队列长度：{}", RECEIVE_QUEUE.size());
             }
         } finally {
-            LOCK.unlock();
+            RECEIVE_LOCK.unlock();
         }
     }
 
     @Override
-    public void addAll(Collection<Message> messages) {
-        LOCK.lock();
+    public void addAllReceive(Collection<Message> messages) {
+        RECEIVE_LOCK.lock();
         try {
-            if (QUEUE.size() < 1000) {
-                QUEUE.addAll(messages);
-                SINGLE.signalAll();
+            if (RECEIVE_QUEUE.size() < 1000) {
+                RECEIVE_QUEUE.addAll(messages);
+                RECEIVE_SINGLE.signalAll();
             }
         } finally {
-            LOCK.unlock();
+            RECEIVE_LOCK.unlock();
         }
     }
 
@@ -110,18 +116,18 @@ public class DefaultMessageManager implements MessageManager {
 
     private void loop() {
         // 队列为空时，等待
-        if (QUEUE.isEmpty()) {
-            LOCK.lock();
+        if (RECEIVE_QUEUE.isEmpty()) {
+            RECEIVE_LOCK.lock();
             try {
-                while (QUEUE.isEmpty()) SINGLE.await();
+                while (RECEIVE_QUEUE.isEmpty()) RECEIVE_SINGLE.await();
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
                 log.error("消息队列等待异常：{}", e.getMessage());
             } finally {
-                LOCK.unlock();
+                RECEIVE_LOCK.unlock();
             }
         }
-        var message = QUEUE.poll();
+        var message = RECEIVE_QUEUE.poll();
         if (Objects.isNull(message)) return;
         log.info(message.formatString());
         this.executor.execute(() -> {

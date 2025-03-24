@@ -55,7 +55,7 @@ public class PluginLoader {
      * @throws IOException io异常
      */
     public static URLClassLoader getClassLoader(File file) throws IOException {
-        return new URLClassLoader(new URL[]{file.toURI().toURL()});
+        return new URLClassLoader(new URL[]{file.toURI().toURL()}, Thread.currentThread().getContextClassLoader());
     }
 
     /**

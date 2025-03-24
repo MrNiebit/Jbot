@@ -91,7 +91,7 @@ public class DefaultPluginManager implements PluginManager {
 
     @Override
     public void reInit() {
-        this.tempData.getJsonObject("limits").forEach(entry -> this.limits.put(ContactUtil.fromString(entry.getKey(), this.contactManager), ConvertUtil.toList(String.class, entry.getValue())));
+        this.tempData.getJsonObject("limits").forEach(entry -> this.limits.put(ContactUtil.fromString(entry.getKey()), ConvertUtil.toList(String.class, entry.getValue())));
         this.tempData.getJsonObject("config").forEach(entry -> this.config.put(entry.getKey(), ((JsonObject) entry.getValue()).mapTo(PluginConfig.class)));
         this.tempData = null;
         log.debug("插件配置重加载成功，加载模式：{}，限制名单：{}，插件配置：{}", this.mode, this.limits, this.config);

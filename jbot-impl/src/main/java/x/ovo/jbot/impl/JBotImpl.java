@@ -61,12 +61,8 @@ public class JBotImpl implements JBot {
         this.adapter.start().await();
 
         Context context = Context.get();
-
+        context.setOwner((Friend) ContactUtil.fromString(context.getConfig().getBot().getOwner()));
         context.getPluginManager().reInit();
-        // 启动消息管理器的消息消费
-//        context.getMessageManager().handle();
-        context.setOwner((Friend) ContactUtil.fromString(context.getConfig().getBot().getOwner(), context.getContactManager()));
-
         return Future.succeededFuture();
     }
 

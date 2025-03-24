@@ -63,23 +63,23 @@ public class DebugPluginManager extends DefaultPluginManager {
     private Runnable scanner() {
         return () -> {
             log.info("插件调试模式开启，开始监听控制台输入");
+            var msg = new TextMessage();
+            if (Objects.isNull(Context.get().getOwner())) Context.get().setOwner(Friend.builder().id("test_sender").nickname("test sender").build());
+            // 如果bot信息为空
+            if (Objects.isNull(Context.get().getBot())) Context.get().setBot(Friend.builder().id("test_receiver").nickname("test receiver").build());
+
+            msg.setSender(Context.get().getOwner());
+            msg.setReceiver(Context.get().getBot());
+
             // 扫描控制台输入
             var scanner = new java.util.Scanner(System.in);
             while (scanner.hasNext()) {
                 // 构建文本消息
                 var text = scanner.nextLine();
                 if (StrUtil.isBlank(text)) {continue;}
-                var msg = new TextMessage();
                 msg.setContent(text);
-                var sender = Friend.builder().id("test_sender").nickname("test sender").build();
-                var receiver = Friend.builder().id("test_receiver").nickname("test receiver").build();
-                Context.get().getContactManager().add(sender);
-                Context.get().getContactManager().add(receiver);
-                Context.get().setOwner(sender);
-                msg.setSender(sender);
-                msg.setReceiver(receiver);
                 msg.setRaw(Buffer.buffer(raw).toJsonObject());
-                Context.get().getMessageManager().add(msg);
+                Context.get().getMessageManager().addReceive(msg);
             }
         };
     }
@@ -92,6 +92,11 @@ public class DebugPluginManager extends DefaultPluginManager {
                 .onFailure(e -> log.error("插件 [{}] 加载失败：{}", file.getName(), e.getMessage(), e))
                 .onSuccess(v -> log.info("插件 [{}] 加载成功", file.getName()))
         );
+    }
+
+    @Override
+    public void reInit() {
+        super.reInit();
         ThreadUtil.execute(scanner());
     }
 
