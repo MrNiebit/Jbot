@@ -87,7 +87,8 @@ public class ApiUtil {
     public static Future<String> download(String path) {
         var option = new RequestOptions()
                 .setAbsoluteURI(path)
-                .addHeader("Content-Type", "application/json")
+                .addHeader(HttpHeaders.USER_AGENT, "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 Edg/134.0.0.0")
+//                .addHeader("Content-Type", "application/json")
                 .setMethod(HttpMethod.GET);
         return CLIENT.request(option)
                 .compose(HttpClientRequest::send)
