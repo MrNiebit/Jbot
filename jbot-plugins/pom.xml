@@ -15,6 +15,12 @@
     <modules>
         <module>jbot-plugin-pm</module>
         <module>jbot-plugin-kfc</module>
+        <module>jbot-plugin-reread</module>
+        <module>jbot-plugin-memory</module>
+        <module>jbot-plugin-news</module>
+        <module>jbot-plugin-onset</module>
+        <module>jbot-plugin-epic</module>
+        <module>jbot-plugin-music</module>
     </modules>
 
     <dependencies>

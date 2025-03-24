@@ -1,0 +1,7 @@
+{
+  "name": "onset",
+  "main": "x.ovo.jbot.plugin.OnsetPlugin",
+  "version": "1.0.0",
+  "description": "随时随地发病",
+  "authors": ["ovo"]
+}

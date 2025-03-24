@@ -1,0 +1,7 @@
+{
+  "name": "memory",
+  "main": "x.ovo.jbot.plugin.memory.MemoryPlugin",
+  "version": "1.0.0",
+  "description": "内存查看、清理",
+  "authors": ["ovo"]
+}

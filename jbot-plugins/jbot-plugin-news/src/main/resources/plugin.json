@@ -1,0 +1,7 @@
+{
+  "name": "news",
+  "main": "x.ovo.jbot.plugin.NewsPlugin",
+  "version": "1.0.0",
+  "description": "每日新闻、摸鱼日报",
+  "authors": ["ovo"]
+}

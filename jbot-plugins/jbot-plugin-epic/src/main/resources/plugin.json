@@ -1,0 +1,7 @@
+{
+  "name": "epic",
+  "main": "x.ovo.jbot.plugin.EpicPlugin",
+  "version": "1.0.0",
+  "description": "看看e宝又送了什么游戏",
+  "authors": ["ovo"]
+}

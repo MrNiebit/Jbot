@@ -10,6 +10,14 @@
     </parent>
 
     <groupId>x.ovo.jbot.plugin</groupId>
-    <artifactId>jbot-plugin-reread</artifactId>
+    <artifactId>jbot-plugin-epic</artifactId>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.dromara.hutool</groupId>
+            <artifactId>hutool-http</artifactId>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
 
 </project>

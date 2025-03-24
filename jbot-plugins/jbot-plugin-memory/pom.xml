@@ -10,6 +10,6 @@
     </parent>
 
     <groupId>x.ovo.jbot.plugin</groupId>
-    <artifactId>jbot-plugin-reread</artifactId>
+    <artifactId>jbot-plugin-memory</artifactId>
 
 </project>
