@@ -10,7 +10,6 @@ import x.ovo.jbot.core.contact.Friend;
 import x.ovo.jbot.core.event.EventManager;
 import x.ovo.jbot.core.message.MessageManager;
 import x.ovo.jbot.core.plugin.PluginManager;
-import x.ovo.jbot.core.service.*;
 
 /**
  * 上下文
@@ -35,17 +34,6 @@ public final class Context {
     private CommandManager commandManager;
 
     private Adapter adapter;
-
-    private ImService imService;
-    private SnsService snsService;
-    private GroupService groupService;
-    private LoginService loginService;
-    private LabelService labelService;
-    private ContactService contactService;
-    private MessageService messageService;
-    private DownloadService downloadService;
-    private FavoriteService favoriteService;
-    private PersonalService personalService;
 
     public static Context get() {
         return INSTANCE;

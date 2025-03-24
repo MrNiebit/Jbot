@@ -16,6 +16,7 @@ public class PersonalCardMessage extends Message{
 
     {this.type = MessageType.PERSONAL_CARD;}
 
+    private String username;
     private String nickname;
     private Gender gender;
     private String province;

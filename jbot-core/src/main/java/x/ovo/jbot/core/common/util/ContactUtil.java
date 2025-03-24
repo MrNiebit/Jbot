@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.dromara.hutool.core.text.StrUtil;
 import x.ovo.jbot.core.Context;
 import x.ovo.jbot.core.contact.Contact;
-import x.ovo.jbot.core.contact.ContactManager;
 import x.ovo.jbot.core.contact.Contactable;
 import x.ovo.jbot.core.contact.RetrievalType;
 
@@ -27,7 +26,7 @@ public final class ContactUtil {
         return s;
     }
 
-    public static Contactable fromString(String string, ContactManager manager) {
+    public static Contactable fromString(String string) {
         if (StrUtil.isBlank(string) || !string.contains(FLAG)) return null;
         // 分割逗号
         for (String s : string.split(",\\s*")) {

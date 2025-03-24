@@ -26,6 +26,7 @@ public class JBotConfig {
         private JsonObject debugConfig = new JsonObject();
         private Boolean saveMedia = false;
         private String owner = "";
+        private String redis = "";
     }
 
     public static @Data class LoginConfig {

@@ -18,7 +18,7 @@ public class CheckLoginDTO {
     private LoginInfo loginInfo;
 
     @Data
-    static class LoginInfo{
+    public static class LoginInfo{
         private Integer uin;
         private String wxid;
         private String nickName;

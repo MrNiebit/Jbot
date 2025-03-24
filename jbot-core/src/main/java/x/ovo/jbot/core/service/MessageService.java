@@ -3,10 +3,7 @@ package x.ovo.jbot.core.service;
 import io.vertx.core.Future;
 import x.ovo.jbot.core.message.Downloadable;
 import x.ovo.jbot.core.message.entity.*;
-import x.ovo.jbot.core.message.entity.appmsg.AppMessage;
-import x.ovo.jbot.core.message.entity.appmsg.AppletMessage;
-import x.ovo.jbot.core.message.entity.appmsg.FileMessage;
-import x.ovo.jbot.core.message.entity.appmsg.LinkMessage;
+import x.ovo.jbot.core.message.entity.appmsg.*;
 
 /**
  * 消息服务
@@ -21,7 +18,22 @@ public interface MessageService {
      * @param message 消息
      * @return {@link Future }<{@link SentMessage }>
      */
-    Future<SentMessage> send(Message message);
+    default Future<SentMessage> send(Message message) {
+        return switch (message.getType()) {
+            case TEXT -> this.sendText((TextMessage) message);
+            case FILE -> this.sendFile((FileMessage) message);
+            case IMAGE -> this.sendImage((ImageMessage) message);
+            case VOICE -> this.sendVoice((VoiceMessage) message);
+            case VIDEO -> this.sendVideo((VideoMessage) message);
+            case EMOTICON -> this.sendEmoji((EmoteMessage) message);
+            case PERSONAL_CARD -> this.sendCard((PersonalCardMessage) message);
+            case APPMSG -> this.sendAppmsg((AppMessage) message);
+            case APPMSG_APPLET -> this.sendApplet((AppletMessage) message);
+            case APPMSG_LINK -> this.sendLink((LinkMessage) message);
+            case APPMSG_MUSIC -> this.sendAppmsg((MusicMessage) message);
+            default -> throw new IllegalArgumentException("未实现的发送类型：" + message.getType());
+        };
+    }
 
     /**
      * 发送文本

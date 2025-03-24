@@ -16,6 +16,7 @@ public enum LoginCheckStatus {
     NOT_SCAN(0, "未扫码"),
     SCAN_NOT_CONFIRM(1, "已扫码，未确认"),
     LOGIN_SUCCESS(2, "登录成功"),
+    CANCEL_LOGIN(4, "已取消"),
     ;
 
     private final int code;

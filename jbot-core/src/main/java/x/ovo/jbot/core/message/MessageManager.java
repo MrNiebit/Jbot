@@ -18,14 +18,14 @@ public interface MessageManager extends Manager, ManagerLifeCycle {
 
     Future<SentMessage> send(Message message);
 
-    void add(Message message);
+    void addReceive(Message message);
 
     /**
      * 添加消息集合
      *
      * @param messages 消息
      */
-    void addAll(Collection<Message> messages);
+    void addAllReceive(Collection<Message> messages);
 
     /**
      * 处理消息
