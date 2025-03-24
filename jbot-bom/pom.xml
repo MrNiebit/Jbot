@@ -26,6 +26,10 @@
         <ver.hutool>6.0.0-M19</ver.hutool>
         <ver.jackson>2.15.4</ver.jackson>
         <ver.junit>5.10.3</ver.junit>
+        <ver.javacv>1.5.11</ver.javacv>
+        <ver.ffmpeg>7.1</ver.ffmpeg>
+
+        <javacpp.platform>windows-x86_64</javacpp.platform>
     </properties>
 
     <dependencyManagement>
@@ -98,6 +102,17 @@
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
                 <version>${ver.jackson}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.bytedeco</groupId>
+                <artifactId>javacv</artifactId>
+                <version>${ver.javacv}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.bytedeco</groupId>
+                <artifactId>ffmpeg</artifactId>
+                <version>${ver.ffmpeg}-${ver.javacv}</version>
+                <classifier>${javacpp.platform}</classifier>
             </dependency>
 
             <!-- 单元测试 -->
