@@ -22,6 +22,12 @@
   },
   // 适配器相关配置
   "adapter": {
-    "name": "x.ovo.jbot.adapter.gewe.GeweAdapter"
+    "name": "apad-adapter",
+    "mode": "release",
+    "port": 9000,
+    "redis_host": "127.0.0.1",
+    "redis_port": 6379,
+    "redis_pwd": "",
+    "redis_db": 0
   }
 }
