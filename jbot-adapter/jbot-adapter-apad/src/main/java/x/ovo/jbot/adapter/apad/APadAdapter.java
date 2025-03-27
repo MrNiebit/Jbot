@@ -109,10 +109,10 @@ public class APadAdapter implements Adapter {
                     if (fs.existsBlocking(CONFIG_PATH)) cfg.mergeIn(fs.readFileBlocking(CONFIG_PATH).toJsonObject());
                     log.debug("adapter config: {}", cfg.encodePrettily());
                     // 启动协议服务还是使用现有服务？
+                    APadAdapter.config = cfg;
                     if (cfg.getBoolean("start_server", true)) {
                         Util.startServer(cfg);
                     }
-                    APadAdapter.config = cfg;
                     log.info(NAME + " 初始化完成");
                 });
     }
