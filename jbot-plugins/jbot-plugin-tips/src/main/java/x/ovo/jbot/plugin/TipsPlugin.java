@@ -46,6 +46,8 @@ public class TipsPlugin extends Plugin {
                 var now = System.currentTimeMillis();
                 var last = LAST.computeIfAbsent(flag, k -> 0L);
                 var duration = Duration.ofMillis(now - last).toMinutes();
+                // 更新时间
+                LAST.put(flag, now);
                 return duration > this.plugin.getConfig().getInteger("timeout");
             }
 
