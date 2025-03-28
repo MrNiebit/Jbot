@@ -22,6 +22,7 @@
         <module>jbot-plugin-onset</module>
         <module>jbot-plugin-epic</module>
         <module>jbot-plugin-music</module>
+        <module>jbot-plugin-reread</module>
     </modules>
 
     <dependencies>
