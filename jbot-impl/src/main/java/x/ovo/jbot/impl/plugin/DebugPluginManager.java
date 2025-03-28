@@ -11,6 +11,7 @@ import x.ovo.jbot.core.Context;
 import x.ovo.jbot.core.common.constant.JBotConstant;
 import x.ovo.jbot.core.common.exception.PluginException;
 import x.ovo.jbot.core.contact.Friend;
+import x.ovo.jbot.core.event.CallListener;
 import x.ovo.jbot.core.message.entity.TextMessage;
 import x.ovo.jbot.core.plugin.Plugin;
 import x.ovo.jbot.core.plugin.PluginConfig;
@@ -155,8 +156,9 @@ public class DebugPluginManager extends DefaultPluginManager {
                         promise.fail(StrUtil.format("加载插件 [{}] 时出现异常：{}", plugin.getDescription().getName(), e.getMessage()));
                     }
                     plugin.setEnabled(Optional.ofNullable(this.config.get(plugin.getDescription().getName())).map(PluginConfig::getEnabled).orElse(true));
-                    Context.get().getEventManager().register(plugin).onFailure(promise::fail).onSuccess(v -> log.debug("插件 [{}] 注册事件监听器成功", plugin.getDescription().getName()));
-                    Context.get().getCommandManager().register(plugin).onFailure(promise::fail).onSuccess(v -> log.debug("插件 [{}] 注册命令执行器成功", plugin.getDescription().getName()));
+                    Context.get().getEventManager().register(plugin).onFailure(promise::fail);
+                    Context.get().getCommandManager().register(plugin).onFailure(promise::fail);
+                    Optional.ofNullable(plugin.getCallListener()).ifPresent(CallListener::register);
                     this.list.add(plugin);
                     this.list.sort(Comparator.comparingInt(p -> p.getDescription().getPriority()));
                     this.container.put(plugin.getDescription().getName(), plugin);
