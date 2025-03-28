@@ -23,6 +23,7 @@
         <module>jbot-plugin-epic</module>
         <module>jbot-plugin-music</module>
         <module>jbot-plugin-reread</module>
+        <module>jbot-plugin-tips</module>
     </modules>
 
     <dependencies>
