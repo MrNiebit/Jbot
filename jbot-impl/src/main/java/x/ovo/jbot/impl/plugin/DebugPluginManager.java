@@ -81,6 +81,7 @@ public class DebugPluginManager extends DefaultPluginManager {
                 var text = scanner.nextLine();
                 if (StrUtil.isBlank(text)) {continue;}
                 msg.setContent(text);
+                msg.setCreateTime(System.currentTimeMillis() / 1000);
                 msg.setRaw(Buffer.buffer(raw).toJsonObject().put("CreateTime", System.currentTimeMillis() / 1000));
                 Context.get().getMessageManager().addReceive(msg);
             }
@@ -106,7 +107,7 @@ public class DebugPluginManager extends DefaultPluginManager {
     @Override
     public Future<Plugin> load(String name) {
         return Future.<File>future(promise -> {
-            var files = new File(path).listFiles();
+            var files = new File(path).listFiles(File::isDirectory);
             if (Objects.isNull(files)) {
                 promise.fail(new PluginException("指定目录下不存在任何文件夹"));
                 return;
