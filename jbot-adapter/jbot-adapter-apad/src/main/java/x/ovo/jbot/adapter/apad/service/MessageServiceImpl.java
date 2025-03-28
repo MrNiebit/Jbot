@@ -192,6 +192,7 @@ public enum MessageServiceImpl implements MessageService {
     }
 
     private Future<SentMessage> buildSentMessage(JsonObject json, Message message) {
+        if (json.getJsonObject("BaseResponse").getInteger("ret") != 0) return Future.failedFuture(json.getString("BaseResponse.ErrMsg", "发送失败"));
         var msg = new SentMessage();
         msg.setMsgId(json.getInteger("MsgId", json.getInteger("msgId", json.getInteger("Msgid"))));
         msg.setNewMsgId(json.getLong("NewMsgId", json.getLong("newMsgId", json.getLong("Newmsgid"))));
