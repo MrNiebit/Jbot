@@ -1,6 +1,7 @@
 package x.ovo.jbot.impl.plugin;
 
 import io.vertx.core.Future;
+import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
 import lombok.extern.slf4j.Slf4j;
@@ -145,6 +146,13 @@ public class DebugPluginManager extends DefaultPluginManager {
                     }
                 })
                 .compose(plugin -> Future.future(promise -> {
+                    try {
+                        var p = Promise.<Void>promise();
+                        plugin.onLoad(p);
+                        p.future().onFailure(t -> promise.fail(StrUtil.format("加载插件 [{}] 时出现异常：{}", plugin.getDescription().getName(), t.getMessage())));
+                    } catch (Exception e) {
+                        promise.fail(StrUtil.format("加载插件 [{}] 时出现异常：{}", plugin.getDescription().getName(), e.getMessage()));
+                    }
                     plugin.setEnabled(Optional.ofNullable(this.config.get(plugin.getDescription().getName())).map(PluginConfig::getEnabled).orElse(true));
                     Context.get().getEventManager().register(plugin).onFailure(promise::fail).onSuccess(v -> log.debug("插件 [{}] 注册事件监听器成功", plugin.getDescription().getName()));
                     Context.get().getCommandManager().register(plugin).onFailure(promise::fail).onSuccess(v -> log.debug("插件 [{}] 注册命令执行器成功", plugin.getDescription().getName()));
