@@ -70,11 +70,27 @@ public class Util {
                 config.getString("mode", "release"),
                 config.getString("redis_host", "127.0.0.1"),
                 config.getInteger("redis_port", 6379),
-                Optional.ofNullable(config.getString("redis_pwd")).map(s -> "-rpwd " + s).orElse(""),
+                Optional.ofNullable(config.getString("redis_pwd")).map(s -> {
+                    if (s.isBlank()) {
+                        return "";
+                    }
+                    return "-rpwd " + s;
+                }).orElse(""),
                 config.getInteger("redis_db", 0)
         );
         log.debug("协议服务启动命令：{}", cmd);
-        ThreadUtil.newThread(() -> RuntimeUtil.execForStr(cmd), "protocol-server").start();
+
+        StringBuilder checkMsg = new StringBuilder();
+        ThreadUtil.newThread(() ->  {
+            String response = RuntimeUtil.execForStr(cmd);
+            log.error("协议服务启动失败，原因：" + response);
+            checkMsg.append("协议服务启动失败，原因：").append(response);
+        }, "protocol-server").start();
+        // mac m1 出现协议还未启动成功，就开始执行后面的逻辑
+        ThreadUtil.sleep(800);
+        if (!checkMsg.isEmpty()) {
+            throw new AdapterException(checkMsg.toString());
+        }
         ApiUtil.getString("/IsRunning").onSuccess(v -> log.info("协议服务启动成功"));
     }
 
