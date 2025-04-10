@@ -93,7 +93,7 @@ public class DebugPluginManager extends DefaultPluginManager {
     public void loadPlugins() {
         var files = new File(path).listFiles(File::isDirectory);
         if (Objects.isNull(files)) {return;}
-        Stream.of(files).forEach(file -> this.load(file)
+        Stream.of(files).filter(file -> !"target".equals(file.getName())).forEach(file -> this.load(file)
                 .onFailure(e -> log.error("插件 [{}] 加载失败：{}", file.getName(), e.getMessage(), e))
                 .onSuccess(v -> log.info("插件 [{}] 加载成功", file.getName()))
         );
