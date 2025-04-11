@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    image: jbot-app:latest
+    container_name: jbot_app
+    ports:
+      - "9000:9000"
+    environment:
+      - TZ=Asia/Shanghai
