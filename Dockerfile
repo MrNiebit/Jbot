@@ -27,7 +27,10 @@ FROM eclipse-temurin:21-jre
 WORKDIR /app
 
 # 安装Redis（如果应用运行时需要）
-RUN apt-get update && apt-get install -y redis
+RUN apt-get update && apt-get install -y redis && \
+sed -i 's/^# save 900/save 60 1000/' /etc/redis/redis.conf && \
+sed -i 's/^appendonly no/appendonly yes/' /etc/redis/redis.conf && \
+sed -i 's/^# appendfsync everysec/appendfsync everysec/' /etc/redis/redis.conf
 
 # 创建插件目录
 RUN mkdir -p /app/plugin
