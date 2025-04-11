@@ -75,7 +75,7 @@ public class CloudPanSubscribePlugin extends Plugin {
                     }
                 }
             }
-        }, 0, 60 * 1000 * 1); // 每5分钟执行一次
+        }, 0, 60 * 1000 * 5); // 每5分钟执行一次
     }
 
     public void persist() {

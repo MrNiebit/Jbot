@@ -38,7 +38,7 @@ RUN mkdir -p /app/plugin
 # 拷贝构建产物
 COPY --from=builder /app/jbot-impl/target/jbot-impl.jar .
 COPY --from=builder /app/jbot-adapter/jbot-adapter-apad/target/jbot-adapter-apad-0.0.1.jar .
-COPY --from=builder /app/jbot-plugins/*/target/*.jar /app/plugin/
+COPY --from=builder /app/jbot-plugins/*/target/jbot-*.jar /app/plugin/
 
 # 如果应用需要监听特定端口，在这里定义
 EXPOSE 9000
