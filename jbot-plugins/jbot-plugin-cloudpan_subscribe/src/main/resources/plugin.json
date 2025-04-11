@@ -1,0 +1,7 @@
+{
+  "name": "cloud_pan",
+  "main": "x.ovo.jbot.plugin.CloudPanSubscribePlugin",
+  "version": "1.0.0",
+  "description": "云盘资源订阅，更新了及时告知！",
+  "authors": ["gitsilence"]
+}

@@ -25,6 +25,7 @@
         <module>jbot-plugin-reread</module>
         <module>jbot-plugin-tips</module>
         <module>jbot-plugin-card</module>
+        <module>jbot-plugin-cloudpan_subscribe</module>
     </modules>
 
     <dependencies>
