@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.dromara.hutool.core.data.id.UUID;
 import org.dromara.hutool.core.text.StrUtil;
 import org.dromara.hutool.core.thread.ThreadUtil;
+import org.dromara.hutool.json.JSONUtil;
 import x.ovo.jbot.core.Context;
 import x.ovo.jbot.core.command.CommandExecutor;
 import x.ovo.jbot.core.contact.Contactable;
@@ -19,7 +20,6 @@ import x.ovo.jbot.plugin.enmus.CloudPanEnums;
 import x.ovo.jbot.plugin.model.SubscribeModel;
 import x.ovo.jbot.plugin.util.CronTimeParser;
 import x.ovo.jbot.plugin.util.ServiceProxyFactory;
-import x.ovo.jbot.plugin.util.VertxJsonUtil;
 
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -35,7 +35,7 @@ public class CloudPanSubscribePlugin extends Plugin {
 
     private static List<SubscribeModel> subscribeModels = Collections.emptyList();
 
-    private static final String CONFIG_JSON = "cloud_pan_subscribe_config.json";
+    private static final String CONFIG_JSON = System.getProperty("user.dir") + "/cloud_pan_subscribe_config.json";
 
 
     @Override
@@ -50,8 +50,9 @@ public class CloudPanSubscribePlugin extends Plugin {
         ServiceProxyFactory.registerSubscriber(CloudPanEnums.ALI_PAN.name(), new AliPanResourceSubscriberImpl());
 
         var path = java.nio.file.Paths.get(CONFIG_JSON);
+        log.info("cloud pan path: {}", path);
         String content = Files.readString(path);
-        subscribeModels = VertxJsonUtil.parseList(content, SubscribeModel.class);
+        subscribeModels = JSONUtil.toList(content, SubscribeModel.class);
         ThreadUtil.execute(this::monitorJob);
     }
 
