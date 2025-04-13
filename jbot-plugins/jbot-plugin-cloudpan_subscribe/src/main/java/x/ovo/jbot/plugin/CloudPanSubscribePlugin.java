@@ -22,6 +22,7 @@ import x.ovo.jbot.plugin.util.ServiceProxyFactory;
 import x.ovo.jbot.plugin.util.VertxJsonUtil;
 
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.Collections;
 import java.util.List;
 
@@ -48,13 +49,10 @@ public class CloudPanSubscribePlugin extends Plugin {
         // 注册服务
         ServiceProxyFactory.registerSubscriber(CloudPanEnums.ALI_PAN.name(), new AliPanResourceSubscriberImpl());
 
-        try (var is = this.getClassLoader().getResourceAsStream(CONFIG_JSON)) {
-            if (is != null) {
-                var json = new String(is.readAllBytes(), StandardCharsets.UTF_8);
-                subscribeModels = VertxJsonUtil.parseList(json, SubscribeModel.class);
-            }
-            ThreadUtil.execute(this::monitorJob);
-        } catch (Exception ignore){}
+        var path = java.nio.file.Paths.get(CONFIG_JSON);
+        String content = Files.readString(path);
+        subscribeModels = VertxJsonUtil.parseList(content, SubscribeModel.class);
+        ThreadUtil.execute(this::monitorJob);
     }
 
     private void monitorJob() {

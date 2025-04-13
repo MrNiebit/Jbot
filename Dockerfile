@@ -26,6 +26,11 @@ RUN  mvn install -f jbot-build/pom.xml -DskipTests \
 FROM eclipse-temurin:21-jre
 WORKDIR /app
 
+# 设置时区为中国时区
+RUN apt-get update && apt-get install -y tzdata && \
+    ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
+    echo "Asia/Shanghai" > /etc/timezone
+
 # 安装Redis（如果应用运行时需要）
 RUN apt-get update && apt-get install -y redis && \
 sed -i 's/^# save 900/save 60 1000/' /etc/redis/redis.conf && \
@@ -44,4 +49,4 @@ COPY --from=builder /app/jbot-plugins/*/target/jbot-*.jar /app/plugin/
 EXPOSE 9000
 
 # 启动Redis和应用
-CMD redis-server & java -cp jbot-impl.jar:jbot-adapter-apad-0.0.1.jar x.ovo.jbot.impl.Main
+CMD sh -c "export TZ=Asia/Shanghai && redis-server & java -cp jbot-impl.jar:jbot-adapter-apad-0.0.1.jar x.ovo.jbot.impl.Main"
