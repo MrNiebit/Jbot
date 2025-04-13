@@ -143,7 +143,7 @@ public class CloudPanSubscribePlugin extends Plugin {
                     }
                     case "add": {
                         if (split.length < 5) {
-                            contactable.send("格式错误，请使用：cloud_pan add ali_pan/baidu_pan url 周六下午6点");
+                            contactable.send("格式错误，请使用：cloud_pan add ali_pan/baidu_pan url 周六下午6点 密码");
                             return true;
                         }
                         String url = split[3];
@@ -161,6 +161,9 @@ public class CloudPanSubscribePlugin extends Plugin {
                         model.setDayOfWeek(cronDate.dayOfWeek());
                         model.setCronTime(cronDate.time());
                         model.setSenderId(fromUserName);
+                        if (split.length == 6) {
+                            model.setPassword(split[5]);
+                        }
                         subscribeModels.add(model);
                         persist();
                         contactable.send("已添加订阅：" + type + " - " + url);

@@ -33,6 +33,11 @@ public class SubscribeModel {
     private String resourceIdentifier;
 
     /**
+     * 资源密码
+     */
+    private String password = "";
+
+    /**
      * 星期几
      */
     private DayOfWeek dayOfWeek;

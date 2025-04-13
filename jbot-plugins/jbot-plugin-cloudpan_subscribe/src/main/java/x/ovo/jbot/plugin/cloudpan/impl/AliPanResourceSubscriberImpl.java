@@ -75,7 +75,7 @@ public class AliPanResourceSubscriberImpl extends AbstractResourceSubscriber {
         String parentFileId = resourceInfo.parentFileId;
 
         // get share token
-        String shareToken = getShareToken(shareId);
+        String shareToken = getShareToken(shareId, subscribeModel.getPassword());
 
         System.out.println("shareId: " + shareId + "; shareToken: " + shareToken);
         // list by share, 这里根据更新时间排序，取出最新的一条
@@ -102,9 +102,9 @@ public class AliPanResourceSubscriberImpl extends AbstractResourceSubscriber {
         return new ResourceInfo(split[4], split[split.length - 1]);
     }
 
-    private String getShareToken(String shareId) {
+    private String getShareToken(String shareId, String password) {
         String apiUrl = "https://api.aliyundrive.com/v2/share_link/get_share_token";
-        String responseStr = post(apiUrl, "{\"share_pwd\": \"\",\"share_id\":\"" + shareId + "\"}");
+        String responseStr = post(apiUrl, "{\"share_pwd\": \"" + password + "\",\"share_id\":\"" + shareId + "\"}");
         return Buffer.buffer(responseStr).toJsonObject().getString("share_token");
     }
 
